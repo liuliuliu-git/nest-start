@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CatsService } from './cats/cats.service';
-import { CatsController } from './cats/cats.controller';
-import { LoggerService } from './logger/logger.service';
+import { WebhookController } from './webhook/webhook.controller';
+import { SlackModule } from './slack/slack.module';
+import { GithubModule } from './github/github.module';
 
 @Module({
-  controllers: [CatsController],
-  providers: [CatsService, LoggerService],
+  controllers: [WebhookController],
+  imports: [SlackModule, GithubModule],
 })
 export class AppModule {}

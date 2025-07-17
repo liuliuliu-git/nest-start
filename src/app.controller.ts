@@ -6,8 +6,6 @@ interface KeyvStoreEntry {
   value: any;
 }
 
-
-
 interface StoreWithMap {
   _store: Map<string, { value: any }>;
 }

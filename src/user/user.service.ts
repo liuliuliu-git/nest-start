@@ -6,7 +6,7 @@ export class UserService {
     try {
       // 发送请求并等待响应
       const response = await fetch(
-        'https://jsonplaceholder.typicode.com/todos',
+        'https://jsonplaceholder.typicode.com/posts',
       );
 
       // 检查 HTTP 状态码

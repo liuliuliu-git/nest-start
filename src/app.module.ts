@@ -1,23 +1,23 @@
 import { Module } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { UserModule } from './user/user.module';
-
-import * as redisStore from 'cache-manager-ioredis';
+import { MulterModule } from '@nestjs/platform-express';
+import * as multer from 'multer';
 
 @Module({
   controllers: [AppController],
   providers: [AppService],
   imports: [
-    CacheModule.register({
-      isGlobal: true, // 👈 全局注册
-      host: 'localhost', // 你的 Redis 容器地址
-      port: 6379,
-      ttl: 0,
-      store: redisStore,
+    MulterModule.register({
+      storage: multer.diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const timestamp = Date.now();
+          const originalName = file.originalname.replace(/\s+/g, '-');
+          cb(null, `${timestamp}-${originalName}`);
+        },
+      }),
     }),
-    UserModule,
   ],
 })
 export class AppModule {}

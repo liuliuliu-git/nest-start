@@ -1,23 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { MulterModule } from '@nestjs/platform-express';
-import * as multer from 'multer';
+import { BullModule } from '@nestjs/bullmq';
+import { QueueController } from './queue.controller';
+import { QueueProcessor } from './queue.worker';
 
 @Module({
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, QueueController],
+  providers: [AppService, QueueProcessor],
   imports: [
-    MulterModule.register({
-      storage: multer.diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const timestamp = Date.now();
-          const originalName = file.originalname.replace(/\s+/g, '-');
-          cb(null, `${timestamp}-${originalName}`);
-        },
-      }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+      defaultJobOptions: { attempts: 3, backoff: 2000 },
     }),
+    BullModule.registerQueue({ name: 'sakura' }),
   ],
 })
 export class AppModule {}
